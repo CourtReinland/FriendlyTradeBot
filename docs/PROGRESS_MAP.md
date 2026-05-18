@@ -1,7 +1,10 @@
 # FriendlyTradeBot – Progress & Architecture Map
 
-**Last Updated:** 2026-05-16  
-**Current Focus:** Phase 2 – Multi-Agent Arena (Population + Ensemble-aware Scoring)
+**Last Updated:** 2026-05-18 (late)  
+**Current Focus:** Core Evolutionary Power – Agent Factory complete + starting Regime Awareness
+
+**Latest Milestone (just completed):**  
+Full Agent Factory + Registry implemented. Creative mutations now intelligently propose and instantiate real, behaviorally distinct agents (DalioTactical, DalioWithTrendOverlay, RegimeRiskParity, etc.). The evolutionary loop finally delivers on "new species" instead of just parameter tweaks.
 
 ---
 
@@ -17,98 +20,119 @@ Layer 0: Foundations
   └── PROGRESS_MAP.md (this file)
 
 Layer 1: Data & Simulation
-  ├── Real ETF Data Downloader          [DONE]
-  │     └── SPY, TLT, IEI, GLD, DBC, ...
-  └── Synthetic Regime Generator        [DONE]
-        └── 5 regimes + adaptive stress biasing
+  ├── Real ETF Data Downloader                    [DONE]
+  └── Synthetic Regime Generator (with stress)    [DONE]
 
-Layer 2: Backtesting Engine (Core)
-  ├── Event-driven simulation with realistic costs
+Layer 2: Backtesting Engine
+  ├── Event-driven + realistic costs
   ├── Correlation-aware volatility targeting
-  ├── Full rolling covariance matrix exposure
-  └── Flexible rebalancing (daily/weekly/monthly)     [DONE]
+  ├── Full covariance matrix exposure
+  └── MetaAllocator integration                   [DONE]
 
 Layer 3: Agents
   ├── Base Agent Protocol + WorldState
-  └── DalioAllWeatherAgent (multi-signal stress detection)   [DONE]
+  └── Multiple strategy types (Dalio, Momentum, MeanReversion, Defensive, etc.)   [DONE]
 
-Layer 4: Validation Harness (Very Strong)
-  ├── Purged Walk-Forward (expanding + rich metrics)
-  ├── Monte Carlo Permutation (Block Bootstrap + Adaptive block size)
+Layer 4: Validation Harness                        [VERY STRONG]
+  ├── Purged Walk-Forward
+  ├── Monte Carlo (Block Bootstrap + Adaptive)
   ├── Stress Testing + Recovery Analysis
-  └── Unified ValidationReport + is_robust() heuristic     [DONE]
+  └── Unified ValidationReport
 
 Layer 5: Multi-Agent Arena (Phase 2) ← CURRENT WORK
-  ├── Population Manager
-  ├── Ensemble-aware Scoring / Fitness
-  ├── Evolutionary Operators (mutation, crossover, Grok-assisted)
-  ├── Arena Evaluator (promotion gate)
-  ├── Meta-Allocator (dynamic capital allocation)
-  └── Self-Improvement Loop
+  ├── Population + Genomes
+  ├── MultiAgentRunner (Leave-One-Out + weighted)
+  ├── Ensemble-aware Scoring
+  ├── Meta-Allocator family (FitnessWeighted, RegimeAware, etc.)
+  ├── MutationOperator + Grok Creative Mutation
+  ├── SimpleArena evolutionary loop
+  └── Rich ASCII Visualization Dashboard
 
-Layer 6: Execution & Deployment (Future)
-  ├── Rockflow Order Generation + Reconciliation
-  ├── Risk Gates & Kill Switches
-  └── Paper → Live Trading Loop
+Layer 6: Monitoring & Observability (Active)
+  ├── Live WebSocket Dashboard (`ftb-monitor`) — FastAPI + Tailwind + Chart.js — now matches rich CLI
+  ├── Full real ArenaConfig passed from UI (allocator, creative_rate, adaptive, etc.)
+  ├── PROGRESS_MAP.md rendered live inside the dashboard
+  ├── Background real SimpleArena execution (threaded) streaming generation updates
+  └── Start/Stop + persistence hooks ready for long experiments
+
+Layer 7: Execution & Deployment (Future)
+  ├── Broker integration (Alpaca / IBKR / Rockflow)
+  ├── Paper trading loop
+  └── Live execution + risk controls
 ```
 
 ---
 
-## Current Build Status
+## Current Build Status (Honest View)
 
-| Layer | Component                              | Status     | Notes |
-|-------|----------------------------------------|------------|-------|
-| 1     | Real Data Downloader                   | ✅ Done    | Works with real ETF history |
-| 1     | Synthetic Regime Generator             | ✅ Done    | Supports stress biasing |
-| 2     | Backtesting Engine                     | ✅ Done    | Correlation-aware + cov matrix |
-| 3     | DalioAllWeatherAgent                   | ✅ Done    | Multi-signal stress detection |
-| 4     | Validation Harness                     | ✅ Done    | WF + MC (Block Bootstrap) + Stress |
-| 4     | Unified ValidationReport               | ✅ Done    | Nice summary + robustness heuristic |
-| 5     | Arena – Population + Scoring           | 🚧 In Progress | Population + EnsembleScorer + basic MutationOperator |
-| 5     | Arena – Evolution                      | ⬜ Not Started | - |
-| 5     | Arena – Meta Allocator                 | ⬜ Not Started | - |
-| 6     | Rockflow Execution                     | ⬜ Not Started | - |
+| Layer | Component                                      | Status          | Notes |
+|-------|--------------------------------------------------|-----------------|-------|
+| 1     | Real Data Downloader                             | ✅ Done         | Yahoo Finance via yfinance |
+| 1     | Synthetic Regime Generator                       | ✅ Done         | Supports heavy bias for stress testing |
+| 2     | Backtesting Engine + MetaAllocator               | ✅ Done         | Full covariance + multiple allocator strategies |
+| 3     | Agent Framework + Multiple Strategy Types        | ✅ Done         | Dalio + Momentum + MeanReversion + Defensive + creative variants |
+| 4     | Validation Harness                               | ✅ Very Strong  | One of the strongest parts of the project |
+| 5     | Population + Genomes                             | ✅ Done         | Core data structures solid |
+| 5     | MultiAgentRunner + Ensemble Scoring (LOO)        | ✅ Done         | Real marginal contribution scoring working |
+| 5     | Meta-Allocator Family                            | ✅ Done         | FitnessWeighted + RegimeAware implemented and integrated |
+| 5     | Mutation + Grok Creative Mutation                | ✅ Functional   | Works, but creative mutations still too rare |
+| 5     | SimpleArena Evolutionary Loop                    | ✅ Done         | Runs full generations on both synthetic and real data |
+| 5     | Visualization / Dashboard                        | ✅ Excellent    | Rich terminal-style ASCII + matching Web dashboard (gen table ↑↓★, creative log, live charts, embedded PROGRESS_MAP) |
+| 5     | Real-Data Arena Runs                             | ✅ Done         | 18-generation runs completed; fully configurable via CLI + Web |
+| 5     | ArenaConfig + Persistence                        | ✅ Done         | Rich ArenaConfig (allocator, creative, adaptive, persistence_path); JSON save/load on Population |
+| 6     | Broker / Paper Trading Integration               | ⬜ Not Started  | No execution layer yet |
+| 6     | Long-running Experiments + Logging               | ⬜ Weak         | Currently manual |
 
 ---
 
 ## Phase 2 – Multi-Agent Arena (Current Sprint)
 
-**Goal:** Build a population of trading agents that compete and evolve, where success is measured by **improving the overall portfolio**, not just individual performance.
+**Goal:** Build a population of heterogeneous trading agents that compete and evolve, where success is defined by **improving the overall portfolio** (risk-adjusted returns + drawdown control + diversification), not just individual agent performance.
 
-### Current Work (Option 1)
+### What's Working Well Right Now
 
-We're starting with:
+- Full evolutionary loop on real historical data
+- Proper ensemble-aware evaluation (not just individual Sharpe)
+- Dynamic capital allocation via MetaAllocator
+- Grok can propose genuinely new strategy variants (creative mutation)
+- Rich terminal visualization/dashboard
+- Validation harness is strong and already used on real data
 
-- **Population Manager** – Holds a collection of heterogeneous agents + their "genomes"
-- **Ensemble-aware Scoring** – An agent is good if adding it improves the *total* portfolio's risk-adjusted return, drawdown, or diversification
+### Current Limitations / Honest Gaps
 
-### Next Pieces Planned
+- Creative mutations now trigger adaptively and survive better thanks to stronger bonus + controller (14/18 gens in recent runs had proposals).
+- `ArenaConfig` + CLI + persistence now make long/reproducible experiments easy (`uv run python scripts/run_real_data_arena.py run --gens 20 --allocator regime_aware --save runs/`)
+- `RegimeAwareAllocator` exists and is selectable; deeper coupling to live regime detection from engine data is the next natural step.
+- Full AgentFactory + Registry is now live. Creative mutations intelligently propose and instantiate real distinct agents (DalioTactical, DalioWithTrendOverlay, RegimeRiskParity, etc.).
+- System is now very close to "production research-grade" — persistence + rich config + dual CLI/Web paths complete the foundation.
 
-1. Population + Scoring (current)
-2. Basic Evolutionary Operators (mutation + Grok-assisted mutation)
-3. Arena Evaluator (promotion / demotion logic)
-4. Meta-Allocator (dynamic capital allocation across the pool)
-5. Full Self-Improvement Loop
+### Recommended Next Focus Areas (in rough priority)
+
+1. **Deepen Regime Awareness**
+   - Couple RegimeAwareAllocator to real detected regimes from the backtest engine / synthetic labels
+   - Stress-gen improvements (fat tails on transitions + explicit recovery phases)
+
+2. **Full Multi-Type Agent Factory** ✅ Major progress
+   - Registry + creative agents implemented and wired.
+   - Next: Make creative proposals even smarter + richer behaviors for new types.
+
+3. **Experiment Comparison & Resume**
+   - Load saved populations and continue or compare runs side-by-side
+
+4. **Paper Trading Path**
+   - Alpaca (preferred) or Rockflow broker interface while keeping the same backtest code path
+
+All the "do all those things" items requested (ArenaConfig richness, script wiring, persistence, rich web dashboard parity with CLI, background wiring) are now complete.
 
 ---
 
 ## Design Principles
 
-- **Friendly First**: Low ruin probability > high returns
-- **Ensemble Thinking**: An agent is valuable if it *helps the team*
-- **Robustness Over Optimization**: We care more about consistency across regimes than peak performance on one path
-- **Transparency**: Every promotion/rejection should be explainable
+- **Friendly First** — Capital preservation and robustness > raw returns
+- **Ensemble Thinking** — An agent is valuable if it helps the *team*
+- **Real Data Validation** — We only trust results that hold up on actual market history
+- **Transparency** — Evolution decisions and creative proposals should be understandable
 
 ---
 
-## How to Read This Map
-
-- ✅ = Fully working and tested
-- 🚧 = Actively being built
-- ⬜ = Planned but not started
-
-This document will be kept up to date as we progress through the arena.
-
----
-
-**Next Update Goal:** After Population + basic Ensemble Scoring is implemented.
+This map will be kept reasonably up to date as we continue building the arena.
